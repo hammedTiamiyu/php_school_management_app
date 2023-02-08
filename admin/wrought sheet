@@ -1,0 +1,979 @@
+
+
+
+<?php
+session_start();
+error_reporting(0);
+include("includes/config.php");
+if(isset($_POST['submit']))
+{
+    $username=$_POST['username'];
+    $password=md5($_POST['password']);
+$query=mysqli_query($con,"SELECT * FROM admin WHERE username='$username' and password='$password'");
+$num=mysqli_fetch_array($query);
+if($num>0)
+{
+$extra="change-password.php";//
+$_SESSION['alogin']=$_POST['username'];
+$_SESSION['id']=$num['id'];
+$host=$_SERVER['HTTP_HOST'];
+$uri=rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
+header("location:http://$host$uri/$extra");
+exit();
+}
+else
+{
+$_SESSION['errmsg']="Invalid username or password";
+$extra="index.php";
+$host  = $_SERVER['HTTP_HOST'];
+$uri  = rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
+header("location:http://$host$uri/$extra");
+exit();
+}
+}
+?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>Admin Login</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <?php include('includes/header.php');?>
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="page-head-line">Please Login To Enter </h4>
+
+                </div>
+
+            </div>
+             <span style="color:red;" ><?php echo htmlentities($_SESSION['errmsg']); ?><?php echo htmlentities($_SESSION['errmsg']="");?></span>
+            <form name="admin" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                     <label>Enter Username : </label>
+                        <input type="text" name="username" class="form-control" required />
+                        <label>Enter Password :  </label>
+                        <input type="password" name="password" class="form-control" required />
+                        <hr />
+                        <button type="submit" name="submit" class="btn btn-info"><span class="glyphicon glyphicon-user"></span> &nbsp;Log Me In </button>&nbsp;
+                </div>
+                </form>
+                <div class="col-md-6">
+                    <div class="alert alert-info">
+                        This is a free bootstrap admin template with basic pages you need to craft your project. 
+                        Use this template for free to use for personal and commercial use.
+                        <br />
+                         <strong> Some of its features are given below :</strong>
+                        <ul>
+                            <li>
+                                Responsive Design Framework Used
+                            </li>
+                            <li>
+                                Easy to use and customize
+                            </li>
+                            <li>
+                                Font awesome icons included
+                            </li>
+                            <li>
+                                Clean and light code used.
+                            </li>
+                        </ul>
+                       
+                    </div>
+                                    </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <?php include('includes/footer.php');?>
+    <!-- FOOTER SECTION END-->
+    <!-- JAVASCRIPT AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY SCRIPTS -->
+    <script src="assets/js/jquery-1.11.1.js"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script src="assets/js/bootstrap.js"></script>
+</body>
+</html>
+
+
+<?php
+session_start();
+error_reporting(0);
+include("includes/config.php");
+if(isset($_POST['submit']))
+{
+    $regNo = $_POST['studentRegNo'];
+    $password = md5($_POST['password']);
+    $query = mysqli_query($con,"SELECT * FROM students WHERE StudentRegNo = '$regNo' and password='$password' ");
+   
+    $num=mysqli_fetch_array($query);
+    if($num>0){
+       $extra="change-password.php";
+       $_SESSION['login']=$_POST['studentRegNo'];
+       $_SESSION['id']=$num['StudentRegnO'];
+       $_SESSION['studentname']=$num['studentName'];
+       $uip=$_SERVER['REMOTE_ADDR'];
+       $status=1;
+       $log=mysqli_query($con,"INSERT INTO userlog(studentRegno,userip,status) VALUES('".$_SESSION['login']."','$uip','$status')");
+       $host=$_SERVER['HTTP_HOST'];
+       $uri=rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
+       header("location:http://$host$uri/$extra");
+       exit();
+       } else
+       {
+           $_SESSION['errmsg']="Username/Password is incorrect";
+           $extra="index.php";
+           $host=$_SERVER['HTTP_HOST'];
+           $uri=rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
+           header("location:http://$host$uri/$extra");
+           exit();
+       }
+     
+}
+
+
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meata charset="UTF-8">
+<meta name="viewport" content="width=device-width initial-scale=0">
+<title>Index Page</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+<body>
+<h2 class="testing">Good Evening PALS</h2>
+<?php include('includes/header.php');?>
+  <div class="content-wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12"> <h2 class="page-head-line">Plese Login </h2> </div>
+      </div>
+      <span style="color:red;" ><?php echo htmlentities($_SESSION['errmsg']); ?><?php echo htmlentities($_SESSION['errmsg']="");?></span>
+      <form name="admin" method="post">
+      <div class="row">
+        <div class="col-md-6">
+        <label for="studentregno">Student Reg No</label>
+            <input class="form-control" type="text" name="studentRegNo" placeholder="Enter your Reg No"/>
+            <label for="password">Password</label>
+            <input class="form-control" type="password" name="password" placeholder="Enter your password" />
+            <button name="submit" class="btn btn-primary">SUBMIT</button>
+        </div>
+      </form>
+      <div class="col-md-6">
+                    <div class="alert alert-info">
+                        This is a free bootstrap admin template with basic pages you need to craft your project. 
+                        Use this template for free to use for personal and commercial use.
+                        <br />
+                         <strong> Some of its features are given below :</strong>
+                        <ul>
+                            <li>
+                                Responsive Design Framework Used
+                            </li>
+                            <li>
+                                Easy to use and customize
+                            </li>
+                            <li>
+                                Font awesome icons included
+                            </li>
+                            <li>
+                                Clean and light code used.
+                            </li>
+                        </ul>
+                       
+                    </div>
+                                    </div>
+      </div>
+
+      
+    </div>
+  </div>
+  <!-- CONTENT-WRAPPER SECTION END-->
+  <?php include('includes/footer.php');?>
+   <!-- FOOTER SECTION END-->
+    <!-- JAVASCRIPT AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY SCRIPTS -->
+    <script src="assets/js/jquery-1.11.1.js"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script src="assets/js/bootstrap.js"></script>
+ 
+</body>
+</html>
+
+
+MENU SECTION
+
+<section class="menu-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="navbar-collapse collapse ">
+                        <ul id="menu-top" class="nav navbar-nav navbar-right">
+
+                            <li><a href="session.php">Session</a></li>
+                            <li><a href="semester.php">Semester </a></li>
+                            <li><a   href="department.php">Department</a></li>
+                             <li><a href="course.php">Course</a></li>
+                              <li><a href="student-registration.php">Registration</a></li>
+                               <li><a href="manage-students.php">Manage Students</a></li>
+                               <li><a href="enroll-history.php">Enroll History</a></li>
+                               <li><a href="user-log.php">Student Logs </a></li>
+                            <li><a href="logout.php">Logout</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    
+<?php
+session_start();
+include('includes/config.php');
+if(strlen($_SESSION['adlogin'])==0)
+    {   
+header('location:index.php');
+}
+else{
+date_default_timezone_set('Asia/Kolkata');// change according timezone
+$currentTime = date( 'd-m-Y h:i:s A', time () );
+
+
+if(isset($_POST['submit']))
+{
+$sql=mysqli_query($con,"SELECT password FROM  admin where password='".md5($_POST['cpass'])."' && username='".$_SESSION['alogin']."'");
+$num=mysqli_fetch_array($sql);
+if($num>0)
+{
+ $con=mysqli_query($con,"update admin set password='".md5($_POST['newpass'])."', updationDate='$currentTime' where username='".$_SESSION['alogin']."'");
+$_SESSION['msg']="Password Changed Successfully !!";
+}
+else
+{
+$_SESSION['msg']="Old Password not match !!";
+}
+}
+?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin | Change Password</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+<script type="text/javascript">
+function valid()
+{
+if(document.chngpwd.cpass.value=="")
+{
+alert("Current Password Filed is Empty !!");
+document.chngpwd.cpass.focus();
+return false;
+}
+else if(document.chngpwd.newpass.value=="")
+{
+alert("New Password Filed is Empty !!");
+document.chngpwd.newpass.focus();
+return false;
+}
+else if(document.chngpwd.cnfpass.value=="")
+{
+alert("Confirm Password Filed is Empty !!");
+document.chngpwd.cnfpass.focus();
+return false;
+}
+else if(document.chngpwd.newpass.value!= document.chngpwd.cnfpass.value)
+{
+alert("Password and Confirm Password Field do not match  !!");
+document.chngpwd.cnfpass.focus();
+return false;
+}
+return true;
+}
+</script>
+<body>
+<?php include('includes/header.php');?>
+    <!-- LOGO HEADER END-->
+<?php if($_SESSION['adlogin']!="")
+{
+ include('includes/menubar.php');
+}
+ ?>
+    <!-- MENU SECTION END-->
+    <div class="content-wrapper">
+        <div class="container">
+              <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="page-head-line">Admin Change Password </h1>
+                    </div>
+                </div>
+                <div class="row" >
+                  <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                        <div class="panel-heading">
+                           Change Password
+                        </div>
+<font color="green" align="center"><?php echo htmlentities($_SESSION['msg']);?><?php echo htmlentities($_SESSION['msg']="");?></font>
+
+
+                        <div class="panel-body">
+                       <form name="chngpwd" method="post" onSubmit="return valid();">
+   <div class="form-group">
+    <label for="exampleInputPassword1">Current Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" name="cpass" placeholder="Password" />
+  </div>
+   <div class="form-group">
+    <label for="exampleInputPassword1">New Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword2" name="newpass" placeholder="Password" />
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Confirm Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword3" name="cnfpass" placeholder="Password" />
+  </div>
+ 
+  <button type="submit" name="submit" class="btn btn-default">Submit</button>
+                           <hr />
+   
+
+
+
+</form>
+                            </div>
+                            </div>
+                    </div>
+                  
+                </div>
+        </div>
+    </div>
+    <!-- CONTENT-WRAPPER SECTION END-->
+  <?php include('includes/footer.php');?>
+    <!-- FOOTER SECTION END-->
+    <!-- JAVASCRIPT AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY SCRIPTS -->
+    <script src="assets/js/jquery-1.11.1.js"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script src="assets/js/bootstrap.js"></script>
+</body>
+</html>
+<?php } ?>
+
+
+COURSE REGISTRATION
+
+<?php
+session_start();
+include('includes/config.php');
+if(strlen($_SESSION['alogin'])==0)
+    {   
+header('location:index.php');
+}
+else{
+
+if(isset($_POST['submit']))
+{
+$coursecode=$_POST['coursecode'];
+$coursename=$_POST['coursename'];
+$courseunit=$_POST['courseunit'];
+$seatlimit=$_POST['seatlimit'];
+$ret=mysqli_query($con,"insert into course(courseCode,courseName,courseUnit,noofSeats) values('$coursecode','$coursename','$courseunit','$seatlimit')");
+if($ret)
+{
+$_SESSION['msg']="Course Created Successfully !!";
+}
+else
+{
+  $_SESSION['msg']="Error : Course not created";
+}
+}
+if(isset($_GET['del']))
+      {
+              mysqli_query($con,"delete from course where id = '".$_GET['id']."'");
+                  $_SESSION['delmsg']="Course deleted !!";
+      }
+?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin | Course</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+<?php include('includes/header.php');?>
+    <!-- LOGO HEADER END-->
+<?php if($_SESSION['alogin']!="")
+{
+ include('includes/menubar.php');
+}
+ ?>
+    <!-- MENU SECTION END-->
+    <div class="content-wrapper">
+        <div class="container">
+              <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="page-head-line">Course  </h1>
+                    </div>
+                </div>
+                <div class="row" >
+                  <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                        <div class="panel-heading">
+                           Course 
+                        </div>
+<font color="green" align="center"><?php echo htmlentities($_SESSION['msg']);?><?php echo htmlentities($_SESSION['msg']="");?></font>
+
+
+                        <div class="panel-body">
+                       <form name="dept" method="post">
+   <div class="form-group">
+    <label for="coursecode">Course Code  </label>
+    <input type="text" class="form-control" id="coursecode" name="coursecode" placeholder="Course Code" required />
+  </div>
+
+ <div class="form-group">
+    <label for="coursename">Course Name  </label>
+    <input type="text" class="form-control" id="coursename" name="coursename" placeholder="Course Name" required />
+  </div>
+
+<div class="form-group">
+    <label for="courseunit">Course unit  </label>
+    <input type="text" class="form-control" id="courseunit" name="courseunit" placeholder="Course Unit" required />
+  </div> 
+
+<div class="form-group">
+    <label for="seatlimit">Seat limit  </label>
+    <input type="text" class="form-control" id="seatlimit" name="seatlimit" placeholder="Seat limit" required />
+  </div>   
+
+ <button type="submit" name="submit" class="btn btn-default">Submit</button>
+</form>
+                            </div>
+                            </div>
+                    </div>
+                  
+                </div>
+                <font color="red" align="center"><?php echo htmlentities($_SESSION['delmsg']);?><?php echo htmlentities($_SESSION['delmsg']="");?></font>
+                <div class="col-md-12">
+                    <!--    Bordered Table  -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Manage Course
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="table-responsive table-bordered">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Course Code</th>
+                                            <th>Course Name </th>
+                                            <th>Course Unit</th>
+                                            <th>Seat limit</th>
+                                             <th>Creation Date</th>
+                                             <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+<?php
+$sql=mysqli_query($con,"select * from course");
+$cnt=1;
+while($row=mysqli_fetch_array($sql))
+{
+?>
+
+
+                                        <tr>
+                                            <td><?php echo $cnt;?></td>
+                                            <td><?php echo htmlentities($row['courseCode']);?></td>
+                                            <td><?php echo htmlentities($row['courseName']);?></td>
+                                            <td><?php echo htmlentities($row['courseUnit']);?></td>
+                                             <td><?php echo htmlentities($row['noofSeats']);?></td>
+                                            <td><?php echo htmlentities($row['creationDate']);?></td>
+                                            <td>
+                                            <a href="edit-course.php?id=<?php echo $row['id']?>">
+<button class="btn btn-primary"><i class="fa fa-edit "></i> Edit</button> </a>                                        
+  <a href="course.php?id=<?php echo $row['id']?>&del=delete" onClick="return confirm('Are you sure you want to delete?')">
+                                            <button class="btn btn-danger">Delete</button>
+</a>
+                                            </td>
+                                        </tr>
+<?php 
+$cnt++;
+} ?>
+
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                     <!--  End  Bordered Table  -->
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+    <!-- CONTENT-WRAPPER SECTION END-->
+  <?php include('includes/footer.php');?>
+    <!-- FOOTER SECTION END-->
+    <!-- JAVASCRIPT AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY SCRIPTS -->
+    <script src="assets/js/jquery-1.11.1.js"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script src="assets/js/bootstrap.js"></script>
+</body>
+</html>
+<?php } ?>
+
+
+COURSE EDIT
+<?php
+session_start();
+include('includes/config.php');
+if(strlen($_SESSION['alogin'])==0)
+    {   
+header('location:index.php');
+}
+else{
+$id=intval($_GET['id']);
+date_default_timezone_set('Asia/Kolkata');// change according timezone
+$currentTime = date( 'd-m-Y h:i:s A', time () );
+if(isset($_POST['submit']))
+{
+$coursecode=$_POST['coursecode'];
+$coursename=$_POST['coursename'];
+$courseunit=$_POST['courseunit'];
+$seatlimit=$_POST['seatlimit'];
+$ret=mysqli_query($con,"update course set courseCode='$coursecode',courseName='$coursename',courseUnit='$courseunit',noofSeats='$seatlimit',updationDate='$currentTime' where id='$id'");
+if($ret)
+{
+$_SESSION['msg']="Course Updated Successfully !!";
+}
+else
+{
+  $_SESSION['msg']="Error : Course not Updated";
+}
+}
+?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin | Course</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+<?php include('includes/header.php');?>
+    <!-- LOGO HEADER END-->
+<?php if($_SESSION['alogin']!="")
+{
+ include('includes/menubar.php');
+}
+ ?>
+    <!-- MENU SECTION END-->
+    <div class="content-wrapper">
+        <div class="container">
+              <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="page-head-line">Course  </h1>
+                    </div>
+                </div>
+                <div class="row" >
+                  <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                        <div class="panel-heading">
+                           Course 
+                        </div>
+<font color="green" align="center"><?php echo htmlentities($_SESSION['msg']);?><?php echo htmlentities($_SESSION['msg']="");?></font>
+
+
+                        <div class="panel-body">
+                       <form name="dept" method="post">
+<?php
+$sql=mysqli_query($con,"select * from course where id='$id'");
+$cnt=1;
+while($row=mysqli_fetch_array($sql))
+{
+?>
+<p><b>Last Updated at</b> :<?php echo htmlentities($row['updationDate']);?></p>
+   <div class="form-group">
+    <label for="coursecode">Course Code  </label>
+    <input type="text" class="form-control" id="coursecode" name="coursecode" placeholder="Course Code" value="<?php echo htmlentities($row['courseCode']);?>" required />
+  </div>
+
+ <div class="form-group">
+    <label for="coursename">Course Name  </label>
+    <input type="text" class="form-control" id="coursename" name="coursename" placeholder="Course Name" value="<?php echo htmlentities($row['courseName']);?>" required />
+  </div>
+
+<div class="form-group">
+    <label for="courseunit">Course unit  </label>
+    <input type="text" class="form-control" id="courseunit" name="courseunit" placeholder="Course Unit" value="<?php echo htmlentities($row['courseUnit']);?>" required />
+  </div>  
+
+<div class="form-group">
+    <label for="seatlimit">Seat limit  </label>
+    <input type="text" class="form-control" id="seatlimit" name="seatlimit" placeholder="Seat limit" value="<?php echo htmlentities($row['noofSeats']);?>" required />
+  </div>  
+
+
+<?php } ?>
+ <button type="submit" name="submit" class="btn btn-default"><i class=" fa fa-refresh "></i> Update</button>
+</form>
+                            </div>
+                            </div>
+                    </div>
+                  
+                </div>
+                
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+    <!-- CONTENT-WRAPPER SECTION END-->
+  <?php include('includes/footer.php');?>
+    <!-- FOOTER SECTION END-->
+    <!-- JAVASCRIPT AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY SCRIPTS -->
+    <script src="assets/js/jquery-1.11.1.js"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script src="assets/js/bootstrap.js"></script>
+</body>
+</html>
+<?php } ?>
+
+
+Manage Student
+
+<?php
+session_start();
+include('includes/config.php');
+error_reporting(0);
+if(strlen($_SESSION['alogin'])==0)
+    {   
+header('location:index.php');
+}
+else{
+
+
+
+if(isset($_GET['del']))
+      {
+              mysqli_query($con,"delete from students where StudentRegno = '".$_GET['id']."'");
+                  $_SESSION['delmsg']="Student record deleted !!";
+      }
+
+     if(isset($_GET['pass']))
+      {
+        $password="Test@123";
+        $newpass=md5($password);
+              mysqli_query($con,"update students set password='$newpass' where StudentRegno = '".$_GET['id']."'");
+                  $_SESSION['delmsg']="Password Reset. New Password is Test@123";
+      } 
+?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin | Course</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+<?php include('includes/header.php');?>
+    <!-- LOGO HEADER END-->
+<?php if($_SESSION['alogin']!="")
+{
+ include('includes/menubar.php');
+}
+ ?>
+    <!-- MENU SECTION END-->
+    <div class="content-wrapper">
+        <div class="container">
+              <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="page-head-line">Course  </h1>
+                    </div>
+                </div>
+                <div class="row" >
+                 
+                <font color="red" align="center"><?php echo htmlentities($_SESSION['delmsg']);?><?php echo htmlentities($_SESSION['delmsg']="");?></font>
+                <div class="col-md-12">
+                    <!--    Bordered Table  -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Manage Course
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="table-responsive table-bordered">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Reg No </th>
+                                            <th>Student Name </th>
+                                            <th> Pincode</th>
+                                             <th>Reg Date</th>
+                                             <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+<?php
+$sql=mysqli_query($con,"select * from students");
+$cnt=1;
+while($row=mysqli_fetch_array($sql))
+{
+?>
+
+
+                                        <tr>
+                                            <td><?php echo $cnt;?></td>
+                                            <td><?php echo htmlentities($row['StudentRegno']);?></td>
+                                            <td><?php echo htmlentities($row['studentName']);?></td>
+                                            <td><?php echo htmlentities($row['pincode']);?></td>
+                                            <td><?php echo htmlentities($row['creationdate']);?></td>
+                                            <td>
+                                            <a href="edit-student-profile.php?id=<?php echo $row['StudentRegno']?>">
+<button class="btn btn-primary"><i class="fa fa-edit "></i> Edit</button> </a>                                        
+<a href="manage-students.php?id=<?php echo $row['StudentRegno']?>&del=delete" onClick="return confirm('Are you sure you want to delete?')">
+                                            <button class="btn btn-danger">Delete</button>
+</a>
+<a href="manage-students.php?id=<?php echo $row['StudentRegno']?>&pass=update" onClick="return confirm('Are you sure you want to reset password?')">
+<button type="submit" name="submit" id="submit" class="btn btn-default">Reset Password</button>
+</a>
+                                            </td>
+                                        </tr>
+<?php 
+$cnt++;
+} ?>
+
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                     <!--  End  Bordered Table  -->
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+    <!-- CONTENT-WRAPPER SECTION END-->
+  <?php include('includes/footer.php');?>
+    <!-- FOOTER SECTION END-->
+    <!-- JAVASCRIPT AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY SCRIPTS -->
+    <script src="assets/js/jquery-1.11.1.js"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script src="assets/js/bootstrap.js"></script>
+</body>
+</html>
+<?php } ?>
+
+
+EDIT STUDENT
+
+<?php
+session_start();
+include('includes/config.php');
+error_reporting(0);
+if(strlen($_SESSION['adlogin'])==0)
+    {   
+header('location:index.php');
+      
+}
+else{
+
+if(isset($_POST['submit']))
+{
+  $regid=intval($_GET['id']);
+$studentname=$_POST['studentname'];
+$photo=$_FILES["photo"]["name"];
+
+
+$cgpa=$_POST['cgpa'];
+move_uploaded_file($_FILES["photo"]["tmp_name"],"studentphoto/".$_FILES["photo"]["name"]);
+$ret=mysqli_query($con,"update students set studentName='$studentname',studentPhoto='$photo',cgpa='$cgpa'  where StudentRegno='$regid'");
+if($ret)
+{
+$_SESSION['msg']="Student Record updated Successfully !!";
+}
+else
+{
+  $_SESSION['msg']="Error : Student Record not update";
+}
+}
+?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Student Profile</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+<?php include('includes/header.php');?>
+    <!-- LOGO HEADER END-->
+<?php if($_SESSION['login']!="")
+{
+ include('includes/menubar.php');
+}
+ ?>
+    <!-- MENU SECTION END-->
+    <div class="content-wrapper">
+        <div class="container">
+              <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="page-head-line">Student Registration  </h1>
+                    </div>
+                </div>
+                <div class="row" >
+                  <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                        <div class="panel-heading">
+                          Student Registration
+                        </div>
+<font color="green" align="center"><?php echo htmlentities($_SESSION['msg']);?><?php echo htmlentities($_SESSION['msg']="");?></font>
+<?php 
+$regid=intval($_GET['id']);
+
+$sql=mysqli_query($con,"select * from students where StudentRegno='$regid'");
+$cnt=1;
+while($row=mysqli_fetch_array($sql))
+{ ?>
+
+                        <div class="panel-body">
+                       <form name="dept" method="post" enctype="multipart/form-data">
+   <div class="form-group">
+    <label for="studentname">Student Name  </label>
+    <input type="text" class="form-control" id="studentname" name="studentname" value="<?php echo htmlentities($row['studentName']);?>"  />
+  </div>
+
+ <div class="form-group">
+    <label for="studentregno">Student Reg No   </label>
+    <input type="text" class="form-control" id="studentregno" name="studentregno" value="<?php echo htmlentities($row['StudentRegno']);?>"  placeholder="Student Reg no" readonly />
+    
+  </div>
+
+
+
+<div class="form-group">
+    <label for="Pincode">Pincode  </label>
+    <input type="text" class="form-control" id="Pincode" name="Pincode" readonly value="<?php echo htmlentities($row['pincode']);?>" required />
+  </div>   
+
+<div class="form-group">
+    <label for="CGPA">CGPA  </label>
+    <input type="text" class="form-control" id="cgpa" name="cgpa"  value="<?php echo htmlentities($row['cgpa']);?>" required />
+  </div>  
+
+
+<div class="form-group">
+    <label for="studentphoto">Student Photo  </label>
+   <?php if($row['studentPhoto']==""){ ?>
+   <img src="../studentphoto/noimage.png" width="200" height="200"><?php } else {?> 
+   <img src="../studentphoto/<?php echo htmlentities($row['studentPhoto']);?>" width="200" height="200">
+   <?php } ?>
+  </div>
+<div class="form-group">
+    <label for="studentphoto">Upload New Photo  </label>
+    <input type="file" class="form-control" id="photo" name="photo"  value="<?php echo htmlentities($row['studentPhoto']);?>" />
+  </div>
+
+
+  <?php } ?>
+
+ <button type="submit" name="submit" id="submit" class="btn btn-default">Update</button>
+</form>
+                            </div>
+                            </div>
+                    </div>
+                  
+                </div>
+
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+  <?php include('includes/footer.php');?>
+    <script src="assets/js/jquery-1.11.1.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+
+
+</body>
+</html>
+<?php } ?>
